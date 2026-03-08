@@ -38,7 +38,7 @@ const OrderPage = () => {
   });
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen food-pattern-bg">
       <div className="max-w-7xl mx-auto px-3 py-3 md:px-6 md:py-5 pb-28 md:pb-6">
         {/* Search */}
         <div className="relative mb-4">
