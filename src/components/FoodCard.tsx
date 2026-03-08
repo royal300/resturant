@@ -12,37 +12,37 @@ const FoodCard = ({ item }: { item: FoodItem }) => {
   };
 
   return (
-    <div className="bg-card rounded-2xl overflow-hidden border hover:shadow-xl transition-all duration-300 group animate-fade-in">
-      {/* Image section – BK style large image with overlay badge */}
-      <div className="relative h-52 overflow-hidden">
+    <div className="flex items-center gap-3 bg-card rounded-xl border p-2.5 hover:shadow-md transition-shadow">
+      {/* Image */}
+      <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden">
         <img
           src={item.image}
           alt={item.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-cover"
           loading="lazy"
         />
         <span
-          className={`absolute top-3 left-3 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+          className={`absolute top-1 left-1 w-3.5 h-3.5 rounded-sm border-2 flex items-center justify-center ${
             item.isVeg
-              ? "bg-success text-success-foreground"
-              : "bg-destructive text-destructive-foreground"
+              ? "border-green-600"
+              : "border-red-600"
           }`}
         >
-          {item.isVeg ? "Veg" : "Non-Veg"}
+          <span className={`w-1.5 h-1.5 rounded-full ${item.isVeg ? "bg-green-600" : "bg-red-600"}`} />
         </span>
       </div>
 
-      {/* Content section */}
-      <div className="p-4">
-        <h3 className="font-bold text-foreground text-base leading-tight">{item.name}</h3>
-        <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{item.description}</p>
-        <div className="flex items-center justify-between mt-4">
-          <span className="text-xl font-bold text-foreground">₹{item.price}</span>
+      {/* Info */}
+      <div className="flex-1 min-w-0">
+        <h3 className="font-semibold text-foreground text-sm leading-tight truncate">{item.name}</h3>
+        <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-1">{item.description}</p>
+        <div className="flex items-center justify-between mt-1.5">
+          <span className="text-sm font-bold text-foreground">₹{item.price}</span>
           <button
             onClick={handleAdd}
-            className="flex items-center gap-1.5 bg-primary text-primary-foreground px-4 py-2 rounded-full text-sm font-bold hover:opacity-90 transition-opacity"
+            className="flex items-center gap-1 bg-primary text-primary-foreground px-3 py-1.5 rounded-lg text-xs font-bold hover:opacity-90 transition-opacity active:scale-95"
           >
-            <Plus className="h-4 w-4" /> Add
+            <Plus className="h-3.5 w-3.5" /> Add
           </button>
         </div>
       </div>

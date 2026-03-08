@@ -11,14 +11,14 @@ export interface FoodItem {
   popular?: boolean;
 }
 
-export const categories: { name: FoodCategory; emoji: string }[] = [
-  { name: "Tandoor", emoji: "🔥" },
-  { name: "Rice", emoji: "🍚" },
-  { name: "Noodles", emoji: "🍜" },
-  { name: "Pizza", emoji: "🍕" },
-  { name: "Burger", emoji: "🍔" },
-  { name: "Chinese", emoji: "🥡" },
-  { name: "Beverages", emoji: "🥤" },
+export const categories: { name: FoodCategory; emoji: string; image: string }[] = [
+  { name: "Tandoor", emoji: "🔥", image: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=100&h=100&fit=crop" },
+  { name: "Rice", emoji: "🍚", image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=100&h=100&fit=crop" },
+  { name: "Noodles", emoji: "🍜", image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=100&h=100&fit=crop" },
+  { name: "Pizza", emoji: "🍕", image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=100&h=100&fit=crop" },
+  { name: "Burger", emoji: "🍔", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=100&h=100&fit=crop" },
+  { name: "Chinese", emoji: "🥡", image: "https://images.unsplash.com/photo-1625220194771-7ebdea0b70b9?w=100&h=100&fit=crop" },
+  { name: "Beverages", emoji: "🥤", image: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=100&h=100&fit=crop" },
 ];
 
 export const menuItems: FoodItem[] = [
