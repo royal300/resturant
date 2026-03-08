@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { categories, menuItems, type FoodCategory } from "@/data/menuData";
 import FoodCard from "@/components/FoodCard";
-import { Search, ShoppingCart } from "lucide-react";
+import { Search, ShoppingCart, ChevronRight } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 
 type VegFilter = "all" | "veg" | "nonveg";
@@ -37,9 +37,14 @@ const OrderPage = () => {
     return true;
   });
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollCategories = () => {
+    scrollRef.current?.scrollBy({ left: 150, behavior: "smooth" });
+  };
+
   return (
-    <div className="min-h-screen food-pattern-bg">
-      <div className="max-w-7xl mx-auto px-3 py-3 md:px-6 md:py-5 pb-28 md:pb-6">
+    <div>
+      <div className="max-w-7xl mx-auto px-3 pt-5 pb-28 md:px-6 md:pt-6 md:pb-6">
         {/* Search */}
         <div className="relative mb-4">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -52,42 +57,54 @@ const OrderPage = () => {
           />
         </div>
 
-        {/* Category Icons - Scrollable */}
-        <div className="flex gap-4 overflow-x-auto pb-3 mb-4 scrollbar-hide -mx-3 px-3">
-          {categories.map(c => (
-            <button
-              key={c.name}
-              onClick={() => setActive(c.name)}
-              className={`flex flex-col items-center gap-2 flex-shrink-0 transition-all duration-300 ${
-                active === c.name ? "scale-105" : "hover:scale-[1.03]"
-              }`}
-            >
-              <div
-                className={`w-16 h-16 md:w-[76px] md:h-[76px] rounded-full overflow-hidden border-[3px] transition-all duration-300 p-0.5 ${
-                  active === c.name
-                    ? "border-primary shadow-lg shadow-primary/25 ring-2 ring-primary/15"
-                    : "border-border/40 hover:border-border"
+        {/* Category Icons - Scrollable with arrow */}
+        <div className="relative mb-4">
+          <div ref={scrollRef} className="flex gap-4 overflow-x-auto pb-3 scrollbar-hide -mx-3 px-3 pt-1">
+            {categories.map(c => (
+              <button
+                key={c.name}
+                onClick={() => setActive(c.name)}
+                className={`flex flex-col items-center gap-2 flex-shrink-0 transition-all duration-300 ${
+                  active === c.name ? "scale-105" : "hover:scale-[1.03]"
                 }`}
               >
-                <img
-                  src={c.image}
-                  alt={c.name}
-                  className="w-full h-full object-cover rounded-full"
-                  loading="lazy"
-                />
-              </div>
-              <span
-                className={`text-[13px] font-medium transition-colors duration-200 whitespace-nowrap ${
-                  active === c.name
-                    ? "text-primary font-semibold"
-                    : "text-foreground"
-                }`}
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {c.name}
-              </span>
-            </button>
-          ))}
+                <div
+                  className={`w-16 h-16 md:w-[76px] md:h-[76px] rounded-full overflow-hidden border-[3px] transition-all duration-300 p-0.5 ${
+                    active === c.name
+                      ? "border-primary shadow-lg shadow-primary/25 ring-2 ring-primary/15"
+                      : "border-border/40 hover:border-border"
+                  }`}
+                >
+                  <img
+                    src={c.image}
+                    alt={c.name}
+                    className="w-full h-full object-cover rounded-full"
+                    loading="lazy"
+                  />
+                </div>
+                <span
+                  className={`text-[13px] font-medium transition-colors duration-200 whitespace-nowrap ${
+                    active === c.name
+                      ? "text-primary font-semibold"
+                      : "text-foreground"
+                  }`}
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  {c.name}
+                </span>
+              </button>
+            ))}
+          </div>
+          {/* Scroll arrow hint */}
+          <button
+            onClick={scrollCategories}
+            className="absolute right-0 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-card border border-border/50 shadow-md flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors z-10"
+            aria-label="Scroll categories"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+          {/* Fade edge */}
+          <div className="absolute right-8 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none" />
         </div>
 
         {/* Veg/Non-Veg Toggle + Section Title */}
