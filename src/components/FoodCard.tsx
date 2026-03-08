@@ -20,9 +20,9 @@ const FoodCard = ({ item }: { item: FoodItem }) => {
   };
 
   return (
-    <div className="flex items-center gap-3 bg-card rounded-2xl border border-border/60 p-2.5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 group">
+    <div className="flex items-center gap-3.5 bg-card rounded-2xl border border-border/40 p-3 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 group shadow-sm">
       {/* Image */}
-      <div className="relative w-[76px] h-[76px] flex-shrink-0 rounded-xl overflow-hidden">
+      <div className="relative w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden shadow-sm">
         <img
           src={item.image}
           alt={item.name}
@@ -35,7 +35,11 @@ const FoodCard = ({ item }: { item: FoodItem }) => {
             item.isVeg ? "border-success" : "border-primary"
           }`}
         >
-          <span className={`w-2 h-2 rounded-full ${item.isVeg ? "bg-success" : "bg-primary"}`} />
+          {item.isVeg ? (
+            <span className="w-2 h-2 rounded-full bg-success" />
+          ) : (
+            <span className="w-0 h-0 border-l-[3px] border-l-transparent border-r-[3px] border-r-transparent border-b-[5px] border-b-primary" />
+          )}
         </span>
       </div>
 
@@ -59,7 +63,7 @@ const FoodCard = ({ item }: { item: FoodItem }) => {
           <span className="text-sm font-bold text-foreground">₹{item.price}</span>
           
           {cartItem ? (
-            <div className="flex items-center gap-0 bg-primary rounded-full overflow-hidden">
+            <div className="flex items-center gap-0 bg-primary rounded-full overflow-hidden shadow-md shadow-primary/20">
               <button
                 onClick={() => updateQuantity(item.id, cartItem.quantity - 1)}
                 className="p-1.5 text-primary-foreground hover:bg-primary/80 transition-colors active:scale-90"
@@ -77,7 +81,7 @@ const FoodCard = ({ item }: { item: FoodItem }) => {
           ) : (
             <button
               onClick={handleAdd}
-              className="flex items-center gap-1 bg-primary text-primary-foreground px-3.5 py-1.5 rounded-full text-xs font-bold hover:shadow-md transition-all active:scale-95"
+              className="flex items-center gap-1 bg-primary text-primary-foreground px-3.5 py-1.5 rounded-full text-xs font-bold hover:shadow-md hover:shadow-primary/20 transition-all active:scale-95"
             >
               <Plus className="h-3 w-3" /> Add
             </button>
