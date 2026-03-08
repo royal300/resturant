@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { categories, menuItems, type FoodCategory } from "@/data/menuData";
 import FoodCard from "@/components/FoodCard";
-import { Search, ShoppingCart } from "lucide-react";
+import { Search, ShoppingCart, ChevronRight } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 
 type VegFilter = "all" | "veg" | "nonveg";
