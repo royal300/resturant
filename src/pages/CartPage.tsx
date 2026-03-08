@@ -24,23 +24,25 @@ const CartPage = () => {
 
       <div className="space-y-4">
         {items.map(item => (
-          <div key={item.id} className="flex items-center gap-4 bg-card rounded-lg border p-4">
-            <img src={item.image} alt={item.name} className="w-20 h-20 rounded-lg object-cover" />
+          <div key={item.id} className="flex items-start gap-3 bg-card rounded-2xl border border-border/40 p-3 shadow-sm">
+            <img src={item.image} alt={item.name} className="w-16 h-16 rounded-xl object-cover flex-shrink-0" />
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-foreground">{item.name}</h3>
-              <p className="text-sm text-muted-foreground">₹{item.price} each</p>
+              <h3 className="font-semibold text-foreground text-sm leading-tight">{item.name}</h3>
+              <p className="text-xs text-muted-foreground mt-0.5">₹{item.price} each</p>
+              <div className="flex items-center justify-between mt-2">
+                <div className="flex items-center gap-0 rounded-full overflow-hidden border border-border">
+                  <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="w-8 h-8 flex items-center justify-center bg-secondary hover:bg-secondary/80 transition-colors">
+                    <Minus className="h-3.5 w-3.5" />
+                  </button>
+                  <span className="w-8 h-8 flex items-center justify-center text-sm font-bold bg-card">{item.quantity}</span>
+                  <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-8 h-8 flex items-center justify-center bg-secondary hover:bg-secondary/80 transition-colors">
+                    <Plus className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+                <span className="font-bold text-primary text-sm">₹{item.price * item.quantity}</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-1 rounded bg-secondary hover:bg-primary/10">
-                <Minus className="h-4 w-4" />
-              </button>
-              <span className="w-8 text-center font-medium">{item.quantity}</span>
-              <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-1 rounded bg-secondary hover:bg-primary/10">
-                <Plus className="h-4 w-4" />
-              </button>
-            </div>
-            <span className="font-bold text-primary w-20 text-right">₹{item.price * item.quantity}</span>
-            <button onClick={() => removeFromCart(item.id)} className="p-2 text-destructive hover:bg-destructive/10 rounded">
+            <button onClick={() => removeFromCart(item.id)} className="p-1.5 text-destructive/60 hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors flex-shrink-0">
               <Trash2 className="h-4 w-4" />
             </button>
           </div>
