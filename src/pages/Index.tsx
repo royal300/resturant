@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Utensils, Clock, ShieldCheck, Star, ArrowRight } from "lucide-react";
-import heroBanner from "@/assets/hero-banner.jpg";
+import heroBanner from "@/assets/hero-banner.webp";
 import { categories } from "@/data/menuData";
 
 const whyUs = [

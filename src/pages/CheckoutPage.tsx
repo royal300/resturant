@@ -4,24 +4,33 @@ import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 
 const CheckoutPage = () => {
-  const { items, totalPrice, placeOrder } = useCart();
+  const { items, totalPrice, placeOrder, clearCart } = useCart();
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: "", phone: "", table: "" });
+  const [loading, setLoading] = useState(false);
 
   if (items.length === 0) {
     navigate("/cart");
     return null;
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name.trim() || !form.phone.trim() || !form.table.trim()) {
       toast.error("Please fill all fields");
       return;
     }
-    const order = placeOrder(form.name.trim(), form.phone.trim(), form.table.trim());
-    toast.success(`Order ${order.id} placed successfully!`);
-    navigate("/");
+    setLoading(true);
+    try {
+      const order = await placeOrder(form.name.trim(), form.phone.trim(), form.table.trim());
+      toast.success(`Order ${order.id} placed successfully! 🎉`);
+      clearCart();
+      navigate("/");
+    } catch {
+      toast.error("Failed to place order. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -81,9 +90,13 @@ const CheckoutPage = () => {
         </div>
 
         <div className="pt-2">
-          <p className="text-sm text-muted-foreground mb-3">💳 Payment: Dummy Payment (Simulated)</p>
-          <button type="submit" className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">
-            Place Order
+          <p className="text-sm text-muted-foreground mb-3">💳 Payment: Pay at Counter</p>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+          >
+            {loading ? "Placing Order..." : "Place Order"}
           </button>
         </div>
       </form>

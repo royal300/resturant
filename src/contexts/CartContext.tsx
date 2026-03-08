@@ -18,15 +18,13 @@ export interface Order {
 
 interface CartContextType {
   items: CartItem[];
-  orders: Order[];
   addToCart: (item: FoodItem) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
   totalPrice: number;
   totalItems: number;
-  placeOrder: (customerName: string, phone: string, tableNumber: string) => Order;
-  updateOrderStatus: (orderId: string, status: Order["status"]) => void;
+  placeOrder: (customerName: string, phone: string, tableNumber: string) => Promise<Order>;
   contactMessages: ContactMessage[];
   addContactMessage: (msg: Omit<ContactMessage, "id" | "createdAt">) => void;
 }
@@ -43,7 +41,6 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
-  const [orders, setOrders] = useState<Order[]>([]);
   const [contactMessages, setContactMessages] = useState<ContactMessage[]>([]);
 
   const addToCart = useCallback((item: FoodItem) => {
@@ -71,7 +68,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
-  const placeOrder = useCallback((customerName: string, phone: string, tableNumber: string) => {
+  const placeOrder = useCallback(async (customerName: string, phone: string, tableNumber: string): Promise<Order> => {
     const order: Order = {
       id: `ORD-${Date.now().toString(36).toUpperCase()}`,
       customerName,
@@ -82,21 +79,35 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       status: "Pending",
       createdAt: new Date(),
     };
-    setOrders(prev => [order, ...prev]);
+
+    // Send order to PHP API
+    try {
+      await fetch("/api/place_order.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: order.id,
+          customerName: order.customerName,
+          phone: order.phone,
+          tableNumber: order.tableNumber,
+          items: order.items.map(i => ({ id: i.id, name: i.name, price: i.price, quantity: i.quantity })),
+          totalPrice: order.total,
+        }),
+      });
+    } catch (e) {
+      console.error("Failed to submit order to server:", e);
+    }
+
     setItems([]);
     return order;
   }, [items, totalPrice]);
-
-  const updateOrderStatus = useCallback((orderId: string, status: Order["status"]) => {
-    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status } : o));
-  }, []);
 
   const addContactMessage = useCallback((msg: Omit<ContactMessage, "id" | "createdAt">) => {
     setContactMessages(prev => [...prev, { ...msg, id: `MSG-${Date.now()}`, createdAt: new Date() }]);
   }, []);
 
   return (
-    <CartContext.Provider value={{ items, orders, addToCart, removeFromCart, updateQuantity, clearCart, totalPrice, totalItems, placeOrder, updateOrderStatus, contactMessages, addContactMessage }}>
+    <CartContext.Provider value={{ items, addToCart, removeFromCart, updateQuantity, clearCart, totalPrice, totalItems, placeOrder, contactMessages, addContactMessage }}>
       {children}
     </CartContext.Provider>
   );
