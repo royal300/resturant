@@ -37,9 +37,14 @@ const OrderPage = () => {
     return true;
   });
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollCategories = () => {
+    scrollRef.current?.scrollBy({ left: 150, behavior: "smooth" });
+  };
+
   return (
-    <div className="min-h-screen food-pattern-bg">
-      <div className="max-w-7xl mx-auto px-3 py-3 md:px-6 md:py-5 pb-28 md:pb-6">
+    <div>
+      <div className="max-w-7xl mx-auto px-3 pt-5 pb-28 md:px-6 md:pt-6 md:pb-6">
         {/* Search */}
         <div className="relative mb-4">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
