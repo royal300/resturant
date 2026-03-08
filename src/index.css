@@ -2,78 +2,78 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 20 10% 10%;
+    --background: 30 100% 98%;
+    --foreground: 0 0% 11%;
 
-    --card: 0 10% 98%;
-    --card-foreground: 20 10% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 20 10% 10%;
+    --popover-foreground: 0 0% 11%;
 
-    --primary: 0 80% 50%;
+    --primary: 1 76% 55%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 10% 96%;
-    --secondary-foreground: 20 10% 10%;
+    --secondary: 43 100% 50%;
+    --secondary-foreground: 0 0% 11%;
 
-    --muted: 0 10% 95%;
-    --muted-foreground: 20 5% 45%;
+    --muted: 30 20% 95%;
+    --muted-foreground: 0 0% 40%;
 
-    --accent: 0 80% 50%;
+    --accent: 14 100% 63%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 10% 90%;
-    --input: 0 10% 90%;
-    --ring: 0 80% 50%;
+    --border: 30 15% 90%;
+    --input: 30 15% 90%;
+    --ring: 1 76% 55%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
-    --sidebar-background: 20 10% 8%;
+    --sidebar-background: 0 0% 11%;
     --sidebar-foreground: 30 10% 90%;
-    --sidebar-primary: 0 80% 50%;
+    --sidebar-primary: 1 76% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 20 10% 15%;
+    --sidebar-accent: 0 0% 16%;
     --sidebar-accent-foreground: 30 10% 90%;
-    --sidebar-border: 20 10% 18%;
-    --sidebar-ring: 0 80% 50%;
+    --sidebar-border: 0 0% 18%;
+    --sidebar-ring: 1 76% 55%;
 
-    --font-display: 'Playfair Display', serif;
-    --font-body: 'DM Sans', sans-serif;
+    --font-display: 'Poppins', sans-serif;
+    --font-body: 'Inter', sans-serif;
 
     --success: 142 70% 45%;
     --success-foreground: 0 0% 100%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 100%;
+    --warning: 43 100% 50%;
+    --warning-foreground: 0 0% 11%;
   }
 
   .dark {
-    --background: 20 10% 8%;
+    --background: 0 0% 7%;
     --foreground: 30 10% 95%;
-    --card: 20 10% 12%;
+    --card: 0 0% 11%;
     --card-foreground: 30 10% 95%;
-    --popover: 20 10% 10%;
+    --popover: 0 0% 10%;
     --popover-foreground: 30 10% 95%;
-    --primary: 0 80% 50%;
+    --primary: 1 76% 55%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 20 10% 15%;
-    --secondary-foreground: 30 10% 95%;
-    --muted: 20 10% 18%;
+    --secondary: 43 100% 50%;
+    --secondary-foreground: 0 0% 11%;
+    --muted: 0 0% 15%;
     --muted-foreground: 30 10% 60%;
-    --accent: 0 80% 50%;
+    --accent: 14 100% 63%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 62% 30%;
     --destructive-foreground: 0 0% 100%;
-    --border: 20 10% 18%;
-    --input: 20 10% 18%;
-    --ring: 0 80% 50%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 1 76% 55%;
   }
 }
 
@@ -84,6 +84,8 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   h1, h2, h3 {
     font-family: var(--font-display);
@@ -92,11 +94,11 @@
 
 @layer components {
   .section-padding {
-    @apply px-4 py-10 md:px-8 md:py-16 lg:px-16;
+    @apply px-4 py-8 md:px-8 md:py-14 lg:px-16;
   }
   .section-title {
     font-family: var(--font-display);
-    @apply text-2xl md:text-4xl font-bold text-foreground;
+    @apply text-xl md:text-3xl font-bold text-foreground;
   }
   .scrollbar-hide {
     -ms-overflow-style: none;
@@ -104,5 +106,14 @@
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+  .glass {
+    @apply bg-card/80 backdrop-blur-lg;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
   }
 }
