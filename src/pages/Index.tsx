@@ -104,15 +104,17 @@ const Index = () => {
       <section className="section-padding bg-secondary/50">
         <div className="container mx-auto">
           <h2 className="section-title text-center mb-10">Explore Menu</h2>
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-4">
+          <div className="flex justify-center flex-wrap gap-6 md:gap-8">
             {categories.map(c => (
               <Link
                 key={c.name}
                 to={`/order?category=${c.name}`}
-                className="flex flex-col items-center gap-2 p-4 rounded-xl bg-card hover:bg-primary/10 transition-colors border"
+                className="flex flex-col items-center gap-2 group"
               >
-                <span className="text-3xl">{c.emoji}</span>
-                <span className="text-sm font-medium text-foreground">{c.name}</span>
+                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 border-border group-hover:border-primary transition-colors shadow-sm">
+                  <img src={c.image} alt={c.name} className="w-full h-full object-cover" loading="lazy" />
+                </div>
+                <span className="text-xs md:text-sm font-semibold text-foreground group-hover:text-primary transition-colors">{c.name}</span>
               </Link>
             ))}
           </div>
