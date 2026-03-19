@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import FoodCard from "@/components/FoodCard";
 import { Search, ShoppingCart, ChevronRight, Loader2, Sparkles, Filter } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
+import useEmblaCarousel from "embla-carousel-react";
 
 type VegFilter = "all" | "veg" | "nonveg";
 
@@ -12,8 +13,10 @@ const OrderPage = () => {
   const [categories, setCategories] = useState<any[]>([]);
   const [menuItems, setMenuItems] = useState<any[]>([]);
   const [combos, setCombos] = useState<any[]>([]);
+  const [banners, setBanners] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" });
   const initialCat = searchParams.get("category") || "Tandoor";
   const [active, setActive] = useState<string>(initialCat);
   const [search, setSearch] = useState("");
@@ -21,16 +24,31 @@ const OrderPage = () => {
   const { totalItems, finalPrice } = useCart();
 
   useEffect(() => {
+    if (emblaApi) {
+      const autoplay = setInterval(() => {
+        emblaApi.scrollNext();
+      }, 4000);
+      return () => clearInterval(autoplay);
+    }
+  }, [emblaApi]);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
-        const [catsRes, dishesRes, combosRes] = await Promise.all([
+        const [catsRes, dishesRes, combosRes, bannersRes] = await Promise.all([
           fetch("/api/categories.php"),
           fetch("/api/dishes.php"),
-          fetch("/api/combos.php")
+          fetch("/api/combos.php"),
+          fetch("/api/banners.php?status=Active")
         ]);
         const catsData = await catsRes.json();
         const dishesData = await dishesRes.json();
         const combosData = await combosRes.json();
+        const bannersData = await bannersRes.json();
+        
+        if (bannersData.status === "success") {
+           setBanners(bannersData.banners);
+        }
         
         let fetchedCats = catsData.status === "success" ? catsData.categories : [];
         if (combosData.status === "success" && combosData.combos?.length > 0) {
@@ -122,6 +140,25 @@ const OrderPage = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4">
+        {/* Banner Slider */}
+        {banners.length > 0 && (
+          <div className="relative mb-8 rounded-[2rem] overflow-hidden shadow-sm border border-gray-100 group" ref={emblaRef}>
+            <div className="flex">
+              {banners.map((banner) => (
+                <div key={banner.id} className="relative flex-[0_0_100%] min-w-0 aspect-[21/9] md:aspect-[3/1]">
+                  <img 
+                    src={banner.image_url} 
+                    alt="Offer Banner" 
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[10s] group-hover:scale-105"
+                  />
+                </div>
+              ))}
+            </div>
+            {/* Gradient Overlay for Sleek Look */}
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent pointer-events-none" />
+          </div>
+        )}
+
         {/* Category Icons */}
         <div className="relative mb-8 pt-2">
           <div className="flex items-center justify-between mb-4 px-1">

@@ -62,6 +62,14 @@ CREATE TABLE IF NOT EXISTS combos (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Banners Table
+CREATE TABLE IF NOT EXISTS banners (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    image_url VARCHAR(255) NOT NULL,
+    status ENUM('Active', 'Inactive') DEFAULT 'Active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Insert default admin user (password: admin123)
 -- Note: In a real app, uses password_hash()
 INSERT IGNORE INTO admin_users (name, email, password, role) 

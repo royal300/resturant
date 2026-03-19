@@ -26,6 +26,7 @@ import CategoryManagement from "./pages/admin/CategoryManagement";
 import CouponManagement from "./pages/admin/CouponManagement";
 import ComboManagement from "./pages/admin/ComboManagement";
 import AnalyticsPage from "./pages/admin/AnalyticsPage";
+import BannerManagement from "./pages/admin/BannerManagement";
 
 import LoginPage from "./pages/LoginPage";
 import UserDashboard from "./pages/UserDashboard";
@@ -71,6 +72,7 @@ const App = () => (
                 <Route path="categories" element={<CategoryManagement />} />
                 <Route path="coupons" element={<CouponManagement />} />
                 <Route path="combos" element={<ComboManagement />} />
+                <Route path="banners" element={<BannerManagement />} />
                 <Route path="analytics" element={<AnalyticsPage />} />
               </Route>
 
