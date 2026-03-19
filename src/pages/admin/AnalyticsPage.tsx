@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { 
   BarChart, 
   Bar, 
@@ -66,6 +68,89 @@ const AnalyticsPage = () => {
     }
   };
 
+  const generatePDF = () => {
+    if (!data) return;
+
+    const doc = new jsPDF();
+    
+    // Title
+    doc.setFontSize(20);
+    doc.text("Restaurant Sales Report", 14, 22);
+    
+    // Subtitle / Date Range
+    doc.setFontSize(11);
+    const dateText = `Period: ${
+      dateRange === 'custom' 
+        ? `${customStart} to ${customEnd}` 
+        : dateRange.replace(/_/g, ' ').toUpperCase()
+    }`;
+    doc.text(dateText, 14, 30);
+    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 36);
+
+    // Summary Section
+    doc.setFontSize(14);
+    doc.text("Executive Summary", 14, 50);
+    
+    autoTable(doc, {
+      startY: 55,
+      head: [['Metric', 'Value']],
+      body: [
+        ['Total Revenue', `Rs ${data.summary?.totalRevenue || 0}`],
+        ['Total Orders', `${data.summary?.totalOrders || 0}`],
+        ['Completed Orders', `${data.summary?.completedOrders || 0}`],
+        ['Pending Orders', `${data.summary?.pendingOrders || 0}`]
+      ],
+      theme: 'grid',
+      headStyles: { fillColor: [212, 17, 33] }
+    });
+
+    let finalY = (doc as any).lastAutoTable.finalY || 55;
+
+    // Daily Sales Table
+    if (data.dailySales && data.dailySales.length > 0) {
+      doc.setFontSize(14);
+      doc.text("Daily Revenue", 14, finalY + 15);
+      
+      const salesBody = data.dailySales.map((day: any) => [day.date, `Rs ${day.revenue}`]);
+      
+      autoTable(doc, {
+        startY: finalY + 20,
+        head: [['Date', 'Revenue']],
+        body: salesBody,
+        theme: 'striped',
+        headStyles: { fillColor: [59, 130, 246] }
+      });
+      
+      finalY = (doc as any).lastAutoTable.finalY;
+    }
+
+    // Food Wise Sales Table
+    if (data.foodWiseSales && data.foodWiseSales.length > 0) {
+      // Check if we need a new page
+      if (finalY > 220) {
+        doc.addPage();
+        finalY = 20;
+      } else {
+        finalY += 15;
+      }
+      
+      doc.setFontSize(14);
+      doc.text("Food-Wise Sales", 14, finalY);
+      
+      const foodBody = data.foodWiseSales.map((item: any) => [item.name, item.orders, `Rs ${item.revenue}`]);
+      
+      autoTable(doc, {
+        startY: finalY + 5,
+        head: [['Item Name', 'Quantity Sold', 'Revenue Generated']],
+        body: foodBody,
+        theme: 'striped',
+        headStyles: { fillColor: [249, 115, 22] }
+      });
+    }
+
+    doc.save(`Sales_Report_${dateRange}.pdf`);
+  };
+
   useEffect(() => {
     if (dateRange !== "custom" || (customStart && customEnd)) {
         fetchAnalytics();
@@ -129,7 +214,9 @@ const AnalyticsPage = () => {
             >
               <RefreshCw className="h-5 w-5" />
             </button>
-            <button className="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-2xl font-bold text-sm shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+            <button 
+              onClick={generatePDF}
+              className="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-2xl font-bold text-sm shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
               <Download className="h-5 w-5" />
               Download Report
             </button>
