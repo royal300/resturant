@@ -7,11 +7,12 @@ export interface FoodItem {
   name: string;
   description: string;
   price: number;
-  category: FoodCategory;
+  originalPrice?: number;
+  category: FoodCategory | string;
   isVeg: boolean;
   image: string;
   popular?: boolean;
-  tags?: FoodTag[];
+  tags?: FoodTag[] | string[];
 }
 
 export const categories: { name: FoodCategory; emoji: string; image: string }[] = [

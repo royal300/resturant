@@ -1,8 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -35,6 +35,8 @@
     --ring: 1 76% 55%;
 
     --radius: 1rem;
+    --radius-2xl: 1.5rem;
+    --radius-3xl: 2rem;
 
     --sidebar-background: 0 0% 11%;
     --sidebar-foreground: 30 10% 90%;
@@ -109,6 +111,15 @@
   }
   .glass {
     @apply bg-card/80 backdrop-blur-lg;
+  }
+  .shadow-premium {
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  }
+  .shadow-premium-hover {
+    @apply hover:shadow-2xl hover:shadow-primary/10 transition-shadow duration-300;
+  }
+  .rounded-3xl-custom {
+    border-radius: var(--radius-3xl);
   }
 }
 

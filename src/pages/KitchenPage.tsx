@@ -64,10 +64,20 @@ const statusConfig = {
 
 const KitchenPage = () => {
   // ─── Auth ────────────────────────────────────────────────────────────────
-  const [authed, setAuthed] = useState(false);
+  const [authed, setAuthed] = useState(() => {
+    return localStorage.getItem("kitchen_authed") === "true";
+  });
   const [loginForm, setLoginForm] = useState({ id: "", pass: "" });
   const [loginError, setLoginError] = useState("");
   const audioCtxRef = useRef<AudioContext | null>(null);
+
+  useEffect(() => {
+    if (authed) {
+      localStorage.setItem("kitchen_authed", "true");
+    } else {
+      localStorage.removeItem("kitchen_authed");
+    }
+  }, [authed]);
 
   // Unlock AudioContext on login click (user interaction required by browser)
   const handleLogin = (e: React.FormEvent) => {

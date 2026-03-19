@@ -3,8 +3,14 @@ require 'db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
-        // Fetch orders that are not Completed
-        $stmt = $pdo->query("SELECT * FROM orders WHERE status != 'Completed' ORDER BY created_at ASC");
+        $all = isset($_GET['all']) && $_GET['all'] == '1';
+        $sql = "SELECT * FROM orders";
+        if (!$all) {
+            $sql .= " WHERE status != 'Completed'";
+        }
+        $sql .= " ORDER BY created_at DESC";
+        
+        $stmt = $pdo->query($sql);
         $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         // Decode JSON items for frontend structure

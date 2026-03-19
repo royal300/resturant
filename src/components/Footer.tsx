@@ -13,6 +13,7 @@ const Footer = () => (
           <Link to="/menu" className="hover:text-primary transition-colors">Menu</Link>
           <Link to="/order" className="hover:text-primary transition-colors">Order Now</Link>
           <Link to="/contact" className="hover:text-primary transition-colors">Contact</Link>
+          <Link to="/admin" className="hover:text-primary transition-colors font-bold text-xs mt-2 border-t border-background/10 pt-2">Admin Portal</Link>
         </div>
       </div>
       <div>
