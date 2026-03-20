@@ -31,6 +31,12 @@ try {
     $stmt = $pdo->prepare("DELETE FROM otps WHERE phone = ?");
     $stmt->execute([$phone]);
 
+    // Check if user exists
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE phone = ?");
+    $stmt->execute([$phone]);
+    $user = $stmt->fetch();
+    $is_new = !$user;
+
     // Insert new OTP
     $stmt = $pdo->prepare("INSERT INTO otps (phone, otp) VALUES (?, ?)");
     if ($stmt->execute([$phone, $otp])) {
@@ -62,7 +68,11 @@ try {
         } else {
             $res = json_decode($response);
             if ($res && isset($res->return) && $res->return) {
-                echo json_encode(["status" => "success", "message" => "OTP sent successfully"]);
+                echo json_encode([
+                    "status" => "success", 
+                    "message" => "OTP sent successfully",
+                    "is_new" => $is_new
+                ]);
             } else {
                 echo json_encode(["status" => "error", "message" => "Fast2SMS Error: " . ($res->message ?? "Unknown error")]);
             }

@@ -10,12 +10,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
     
-    $stmt = $pdo->prepare("INSERT INTO orders (id, customer_name, phone, table_number, items, total_price, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT INTO orders (id, user_phone, customer_name, phone, table_number, items, total_price, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
     
     try {
         $pdo->beginTransaction();
         $stmt->execute([
             $data['id'],
+            $data['phone'] ?? '', // Mapping phone to user_phone for filtering
             $data['customerName'] ?? 'Guest',
             $data['phone'] ?? '',
             $data['tableNumber'] ?? '',

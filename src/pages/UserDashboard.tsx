@@ -18,27 +18,26 @@ import { Link } from "react-router-dom";
 const UserDashboard = () => {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const userName = localStorage.getItem("user_name") || "Valued Customer";
+  const userPhone = localStorage.getItem("user_phone");
   
-  // Mock data for loyalty and active order
+  // Mock data for loyalty points
   const loyaltyPoints = 1250;
-  const activeOrder = {
-    id: "RR-1024",
-    status: "Preparing",
-    message: "Our chef is preparing your delicious meal... 🍳",
-    progress: 45
-  };
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    if (userPhone) {
+      fetchOrders();
+    } else {
+      setLoading(false);
+    }
+  }, [userPhone]);
 
   const fetchOrders = async () => {
     try {
-      // We'll use the existing get_orders.php but might need to filter by user in future
-      const res = await fetch("/api/get_orders.php");
+      const res = await fetch(`/api/get_orders.php?all=1&phone=${userPhone}`);
       const data = await res.json();
-      if (data.status === "success") {
-        setOrders(data.orders.slice(0, 5)); // Just show recent 5
+      if (data.status === "success" || data.success) {
+        setOrders(data.orders);
       }
     } catch (err) {
       console.error("Failed to fetch orders");
@@ -53,11 +52,11 @@ const UserDashboard = () => {
       <div className="bg-white px-6 pt-12 pb-8 rounded-b-[3rem] shadow-sm">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-black text-gray-900 tracking-tight">Hello, Alex! ✨</h1>
+            <h1 className="text-2xl font-black text-gray-900 tracking-tight">Hello, {userName.split(' ')[0]}! ✨</h1>
             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Gourmet Member</p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border-2 border-primary/20 overflow-hidden">
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="Avatar" />
+          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border-2 border-primary/20 overflow-hidden text-primary font-black">
+            {userName.charAt(0)}
           </div>
         </div>
       </div>
@@ -71,7 +70,7 @@ const UserDashboard = () => {
             </div>
             <div>
               <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Total Orders</p>
-              <p className="text-xl font-black text-gray-900">42</p>
+              <p className="text-xl font-black text-gray-900">{orders.length}</p>
             </div>
           </div>
           <div className="bg-white p-5 rounded-[2rem] shadow-premium border border-gray-100 flex flex-col justify-between h-32">
@@ -85,32 +84,42 @@ const UserDashboard = () => {
           </div>
         </div>
 
-        {/* Active Order */}
-        <div className="bg-primary text-white p-6 rounded-[2.5rem] shadow-xl shadow-primary/20 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
-             <Clock className="w-24 h-24" />
-          </div>
-          <div className="relative z-10">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <span className="text-[10px] font-black uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full">Active Order #{activeOrder.id}</span>
-                <h3 className="text-lg font-bold mt-3">{activeOrder.message}</h3>
+        {/* Latest Order Status */}
+        {orders.length > 0 && orders[0].status !== 'Completed' && (
+          <div className="bg-primary text-white p-6 rounded-[2.5rem] shadow-xl shadow-primary/20 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
+               <Clock className="w-24 h-24" />
+            </div>
+            <div className="relative z-10">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full">Order #{orders[0].id}</span>
+                  <h3 className="text-lg font-bold mt-3">
+                    {orders[0].status === 'Pending' && "We've received your order! 📝"}
+                    {orders[0].status === 'Preparing' && "Chef is working their magic... 🍳"}
+                    {orders[0].status === 'Ready' && "Your food is ready for pickup! 🥡"}
+                    {orders[0].status === 'Out for Delivery' && "On the way to your doorstep! 🛵"}
+                  </h3>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="h-2 bg-white/20 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-white animate-pulse" 
+                    style={{ 
+                      width: orders[0].status === 'Pending' ? '25%' : 
+                             (orders[0].status === 'Preparing' ? '60%' : '90%') 
+                    }}
+                  ></div>
+                </div>
+                <div className="flex justify-between text-[10px] font-black uppercase tracking-widest opacity-80">
+                  <span>{orders[0].status}</span>
+                  <span>Estimated 15-20m</span>
+                </div>
               </div>
             </div>
-            <div className="space-y-2">
-              <div className="h-2 bg-white/20 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-white animate-pulse" 
-                  style={{ width: `${activeOrder.progress}%` }}
-                ></div>
-              </div>
-              <div className="flex justify-between text-[10px] font-black uppercase tracking-widest opacity-80">
-                <span>Ordered</span>
-                <span>Arriving in 18m</span>
-              </div>
-            </div>
           </div>
-        </div>
+        )}
 
         {/* Recent Orders */}
         <div className="space-y-4">

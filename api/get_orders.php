@@ -4,9 +4,13 @@ require 'db.php';
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         $all = isset($_GET['all']) && $_GET['all'] == '1';
-        $sql = "SELECT * FROM orders";
+        $phone = isset($_GET['phone']) ? $_GET['phone'] : null;
+        $sql = "SELECT * FROM orders WHERE 1=1";
         if (!$all) {
-            $sql .= " WHERE status != 'Completed'";
+            $sql .= " AND status != 'Completed'";
+        }
+        if ($phone) {
+            $sql .= " AND user_phone = " . $pdo->quote($phone);
         }
         $sql .= " ORDER BY created_at DESC";
         

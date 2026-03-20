@@ -28,14 +28,34 @@ try {
         $stmt = $pdo->prepare("DELETE FROM otps WHERE phone = ?");
         $stmt->execute([$phone]);
         
-        echo json_encode([
-            "status" => "success", 
-            "message" => "Logged in successfully",
-            "user" => [
-                "phone" => $phone,
-                "name" => "Customer"
-            ]
-        ]);
+        // Check if user exists
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE phone = ?");
+        $stmt->execute([$phone]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$user && isset($data->name) && !empty($data->name)) {
+            // Create New User
+            $stmt = $pdo->prepare("INSERT INTO users (name, phone) VALUES (?, ?)");
+            $stmt->execute([$data->name, $phone]);
+            
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE phone = ?");
+            $stmt->execute([$phone]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+        
+        if (!$user) {
+            echo json_encode(["status" => "error", "message" => "User not found and no name provided for signup."]);
+        } else {
+            echo json_encode([
+                "status" => "success", 
+                "message" => "Logged in successfully",
+                "user" => [
+                    "id" => $user['id'],
+                    "phone" => $phone,
+                    "name" => $user['name']
+                ]
+            ]);
+        }
     } else {
         echo json_encode(["status" => "error", "message" => "Invalid or expired OTP"]);
     }

@@ -7,16 +7,26 @@ import { ChevronLeft, Ticket, MapPin, User, Phone, Table, ArrowRight, Loader2, C
 const CheckoutPage = () => {
   const { items, totalPrice, coupon, applyCoupon, removeCoupon, discount, finalPrice, placeOrder } = useCart();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: "", phone: "", table: "" });
+  const [form, setForm] = useState({ 
+    name: localStorage.getItem("user_name") || "", 
+    phone: localStorage.getItem("user_phone") || "", 
+    table: "" 
+  });
   const [couponCode, setCouponCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [applyingCoupon, setApplyingCoupon] = useState(false);
+  const isAuthed = localStorage.getItem("user_authed") === "true";
 
   useEffect(() => {
+    if (!isAuthed) {
+      toast.error("Please login to proceed with your order");
+      navigate("/login?redirect=/checkout");
+      return;
+    }
     if (items.length === 0) {
       navigate("/order");
     }
-  }, [items, navigate]);
+  }, [items, navigate, isAuthed]);
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
